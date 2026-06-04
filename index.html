@@ -71,9 +71,12 @@
     // URL del Google Sheets publicado
     const sheetURL = "https://cors-anywhere.herokuapp.com/https://docs.google.com/spreadsheets/d/e/2PACX-1vSqhZ54MaqEU08sWUcJJFRclYSAwG8a8onwuAJ4DRplHv6agTehTtSSBsZgDbWPFhNDfNw1075604ol/pub?output=csv";
 
-    
     // Obtener datos del Google Sheets
-    fetch(sheetURL)
+    fetch(sheetURL, {
+      headers: {
+        "x-requested-with": "XMLHttpRequest"
+      }
+    })
       .then(response => response.text())
       .then(csvText => {
         const rows = csvText.split("\\n").map(row => row.split(","));
@@ -109,7 +112,10 @@
 
         // Crear gráfico con Chart.js
         const labels = data.map(row => "Dimensión");
-        const npsScores = data.map(row => parseFloat(row[npsGeneralIndex]));
+        const npsScores = data.map(row => {
+          const value = parseFloat(row[npsGeneralIndex]);
+          return isNaN(value) ? 0 : value; // Reemplaza valores no numéricos por 0
+        });
 
         const ctx = document.getElementById('npsChart').getContext('2d');
         new Chart(ctx, {
