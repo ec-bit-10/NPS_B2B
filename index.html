@@ -69,7 +69,7 @@
 
   <script>
     // URL del Google Sheets publicado
-    const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSqhZ54MaqEU08sWUcJJFRclYSAwG8a8onwuAJ4DRplHv6agTehTtSSBsZgDbWPFhNDfNw1075604ol/pubhtml?gid=1040575993&single=true";
+    const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSqhZ54MaqEU08sWUcJJFRclYSAwG8a8onwuAJ4DRplHv6agTehTtSSBsZgDbWPFhNDfNw1075604ol/pub?output=csv";
 
     // Obtener datos del Google Sheets
     fetch(sheetURL)
@@ -79,11 +79,26 @@
         const headers = rows[0];
         const data = rows.slice(1);
 
+        // Extraer columnas relevantes según el orden real
+        const npsGeneralIndex = 7; // Columna H
+        const tecnologiaIndex = 9; // Columna J
+        const productoIndex = 11; // Columna L
+        const postVentaIndex = 13; // Columna N
+        const comercialIndex = 15; // Columna P
+
         // Poblar la tabla HTML
         const tableBody = document.querySelector("#dataTable tbody");
         data.forEach(row => {
           const tr = document.createElement("tr");
-          row.forEach(cell => {
+          const valores = [
+            "NPS General",
+            row[npsGeneralIndex],
+            row[tecnologiaIndex],
+            row[productoIndex],
+            row[postVentaIndex],
+            row[comercialIndex]
+          ];
+          valores.forEach(cell => {
             const td = document.createElement("td");
             td.textContent = cell;
             tr.appendChild(td);
@@ -92,8 +107,8 @@
         });
 
         // Crear gráfico con Chart.js
-        const labels = data.map(row => row[0]); // Primera columna como etiquetas
-        const npsScores = data.map(row => parseFloat(row[1])); // Segunda columna como datos
+        const labels = data.map(row => "Dimensión");
+        const npsScores = data.map(row => parseFloat(row[npsGeneralIndex]));
 
         const ctx = document.getElementById('npsChart').getContext('2d');
         new Chart(ctx, {
