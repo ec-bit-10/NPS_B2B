@@ -76,8 +76,8 @@
       .then(response => response.text())
       .then(csvText => {
         const rows = csvText.split("\\n").map(row => row.split(","));
-        const headers = rows[0];
-        const data = rows.slice(1);
+        const headers = rows[3]; // Fila 4 contiene los encabezados
+        const data = rows.slice(4); // Datos comienzan en la fila 5
 
         // Extraer columnas relevantes según el orden real
         const npsGeneralIndex = 7; // Columna H
